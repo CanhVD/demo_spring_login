@@ -60,7 +60,7 @@ public class UserController extends BaseRestController {
         });
     }
 
-    @PutMapping({"id"})
+    @PutMapping({"{id}"})
     public ResponseEntity<BaseResponse<User>> updateUser(
             @RequestBody UserRequest request,
             @PathVariable(value = "id") Integer id
