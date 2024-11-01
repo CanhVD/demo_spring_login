@@ -66,10 +66,13 @@ public class UserService implements IUserService {
             throw new Exception("User is exists");
         }
         User updateUser = User.builder()
+                .id(user.getId())
                 .username(request.getUsername())
                 .password(request.getPassword())
                 .updatedAt(LocalDateTime.now())
                 .updateBy(request.getCreateBy())
+                .createBy(user.getCreateBy())
+                .createdAt(user.getCreatedAt())
                 .build();
         return userRepository.save(updateUser);
     }
