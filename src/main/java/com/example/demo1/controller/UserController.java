@@ -74,7 +74,7 @@ public class UserController extends BaseRestController {
         });
     }
 
-    @DeleteMapping({"id"})
+    @DeleteMapping({"{id}"})
     public void deleteUser(@PathVariable(value = "id") Integer id) {
         userService.deleteUser(id);
     }

@@ -7,6 +7,8 @@ import com.example.demo1.request.LoginResquest;
 import com.example.demo1.response.LoginResponse;
 import com.example.demo1.service.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,8 +22,12 @@ public class UserService implements IUserService {
 
     private final JwtService jwtService;
 
+    private static final Logger logger = LogManager.getLogger(UserService.class);
+
     @Override
     public List<User> getAllUser() {
+        logger.info("api get all user is running");
+        logger.debug("api get all user is running");
         return userRepository.findAll();
     }
 
