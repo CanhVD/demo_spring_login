@@ -1,5 +1,7 @@
 package com.example.demo1.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +24,7 @@ public class User {
 
     private String username;
 
+    @JsonIgnore
     private String password;
 
     private LocalDateTime createdAt;

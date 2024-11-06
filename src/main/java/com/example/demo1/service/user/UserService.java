@@ -5,10 +5,14 @@ import com.example.demo1.repository.UserRepository;
 import com.example.demo1.request.UserRequest;
 import com.example.demo1.request.LoginResquest;
 import com.example.demo1.response.LoginResponse;
+import com.example.demo1.response.PageResponse;
 import com.example.demo1.service.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,6 +33,16 @@ public class UserService implements IUserService {
         logger.info("api get all user is running");
         logger.debug("api get all user is running");
         return userRepository.findAll();
+    }
+
+    @Override
+    public PageResponse<List<User>> getUserBySearch(Integer page, Integer size) {
+        Page<User> userPage = userRepository.findAll(PageRequest.of(page - 1, size));
+        System.out.println(userPage.getTotalElements());
+        return PageResponse.<List<User>>builder()
+                .result(userPage.getContent())
+                .total(userPage.getTotalElements())
+                .build();
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.example.demo1.request.UserRequest;
 import com.example.demo1.request.LoginResquest;
 import com.example.demo1.response.BaseResponse;
 import com.example.demo1.response.LoginResponse;
-import com.example.demo1.service.jwt.JwtService;
+import com.example.demo1.response.PageResponse;
 import com.example.demo1.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +19,6 @@ import java.util.List;
 public class UserController extends BaseRestController {
 
     private final UserService userService;
-
-    private final JwtService jwtService;
 
     @PostMapping("login")
     public ResponseEntity<BaseResponse<LoginResponse>> login(@RequestBody LoginResquest request) {
@@ -36,6 +34,14 @@ public class UserController extends BaseRestController {
     @GetMapping()
     public ResponseEntity<BaseResponse<List<User>>> getAllUsers() {
         return execute(userService::getAllUser);
+    }
+
+    @GetMapping("search")
+    public ResponseEntity<BaseResponse<PageResponse<List<User>>>> getUserBySearch(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+    ) {
+        return execute(() -> userService.getUserBySearch(page, size));
     }
 
     @GetMapping("{id}")
