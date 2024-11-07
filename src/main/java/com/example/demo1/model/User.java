@@ -24,6 +24,8 @@ public class User {
 
     private String username;
 
+    private String email;
+
     @JsonIgnore
     private String password;
 
@@ -34,4 +36,6 @@ public class User {
     private String createBy;
 
     private String updateBy;
+
+    private Integer status;
 }

@@ -9,6 +9,9 @@ public class UserRequest {
     @JsonProperty("username")
     private String username;
 
+    @JsonProperty("email")
+    private String email;
+
     @JsonProperty("password")
     private String password;
 

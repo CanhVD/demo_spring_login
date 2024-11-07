@@ -73,6 +73,7 @@ public class UserService implements IUserService {
         User newUser = User.builder()
                 .username(request.getUsername())
                 .password(request.getPassword())
+                .email(request.getEmail())
                 .createdAt(LocalDateTime.now())
                 .createBy(request.getCreateBy())
                 .build();
@@ -89,6 +90,7 @@ public class UserService implements IUserService {
                 .id(user.getId())
                 .username(request.getUsername())
                 .password(request.getPassword())
+                .email(request.getEmail())
                 .updatedAt(LocalDateTime.now())
                 .updateBy(request.getCreateBy())
                 .createBy(user.getCreateBy())
