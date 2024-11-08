@@ -83,8 +83,12 @@ public class UserService implements IUserService {
     @Override
     public User updateUser(UserRequest request, Integer id) throws Exception {
         User user = userRepository.findById(id).orElse(null);
-        if (user != null && !user.getUsername().equalsIgnoreCase(request.getUsername())) {
-            throw new Exception("User is exists");
+        if (user == null) {
+            throw new Exception("User not found");
+        }
+        Boolean checkUserName = userRepository.existsByUsername(request.getUsername());
+        if (checkUserName && !request.getUsername().equalsIgnoreCase(user.getUsername())) {
+            throw new Exception("User is exits");
         }
         User updateUser = User.builder()
                 .id(user.getId())

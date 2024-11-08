@@ -33,14 +33,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws IOException, ServletException {
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");
+        response.setHeader("Access-Control-Max-Age", "3600");
+        response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, X-Requested-With, remember-me");
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return;
+        }
         if (isBypassToken(request)) {
-            filterChain.doFilter(request, response); //enable bypass
+            filterChain.doFilter(request, response);
             return;
         }
         try {
             String authHeader = request.getHeader("Authorization");
-            //String jwt = authHeader.substring(7);
-            String jwt = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJNYWMgUGhhbSAwMSIsImlhdCI6MTczMDk3NDgwNiwiZXhwIjoxNzMwOTc4NDA2fQ.9ox1CAqITjIeY_rI2QUcZfopDeTMwdZlymWAX1uP6nE";
+            String jwt = authHeader.substring(7);
             if (jwtService.isTokenValid(jwt)) {
                 filterChain.doFilter(request, response);
                 return;
@@ -55,7 +63,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private boolean isBypassToken(@NonNull HttpServletRequest request) {
         final List<Pair<String, String>> bypassTokens = Arrays.asList(
                 Pair.of(String.format("%s/users/login", apiPrefix), "POST"),
-                //Pair.of(String.format("%s/users/login", apiPrefix), "OPTIONS"),
 
                 // Swagger
                 Pair.of("/api-docs", "GET"),
