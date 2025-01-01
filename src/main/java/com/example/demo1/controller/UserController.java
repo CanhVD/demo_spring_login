@@ -2,9 +2,7 @@ package com.example.demo1.controller;
 
 import com.example.demo1.model.User;
 import com.example.demo1.request.UserRequest;
-import com.example.demo1.request.LoginResquest;
 import com.example.demo1.response.BaseResponse;
-import com.example.demo1.response.LoginResponse;
 import com.example.demo1.response.PageResponse;
 import com.example.demo1.service.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -19,17 +17,6 @@ import java.util.List;
 public class UserController extends BaseRestController {
 
     private final UserService userService;
-
-    @PostMapping("login")
-    public ResponseEntity<BaseResponse<LoginResponse>> login(@RequestBody LoginResquest request) {
-        return execute(() -> {
-            try {
-                return userService.login(request);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
 
     @GetMapping()
     public ResponseEntity<BaseResponse<List<User>>> getAllUsers() {

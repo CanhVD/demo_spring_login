@@ -3,16 +3,12 @@ package com.example.demo1.service.user;
 import com.example.demo1.model.User;
 import com.example.demo1.repository.UserRepository;
 import com.example.demo1.request.UserRequest;
-import com.example.demo1.request.LoginResquest;
-import com.example.demo1.response.LoginResponse;
 import com.example.demo1.response.PageResponse;
-import com.example.demo1.service.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,8 +19,6 @@ import java.util.List;
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
-
-    private final JwtService jwtService;
 
     private static final Logger logger = LogManager.getLogger(UserService.class);
 
@@ -52,17 +46,6 @@ public class UserService implements IUserService {
             throw new Exception("User not found");
         }
         return user;
-    }
-
-    public LoginResponse login(LoginResquest resquest) throws Exception {
-        User user = userRepository.findByUsername(resquest.getUsername());
-        if (user == null) {
-            throw new Exception("User not found");
-        }
-        return LoginResponse.builder()
-                .username(resquest.getUsername())
-                .accessToken(jwtService.generateToken(user))
-                .build();
     }
 
     @Override

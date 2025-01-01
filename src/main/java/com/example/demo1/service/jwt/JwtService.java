@@ -26,6 +26,9 @@ public class JwtService {
     @Value("${security.jwt.expiration-time}")
     private long jwtExpiration;
 
+    @Value("${security.refresh.jwt.expiration-time}")
+    private long jwtRefreshExpiration;
+
     @Autowired
     UserRepository userRepository;
 
@@ -44,6 +47,14 @@ public class JwtService {
 
     public String generateToken(Map<String, Object> extraClaims, User user) {
         return buildToken(extraClaims, user, jwtExpiration);
+    }
+
+    public String generateRefreshToken(User user) {
+        return generateRefreshToken(new HashMap<>(), user);
+    }
+
+    public String generateRefreshToken(Map<String, Object> extraClaims, User user) {
+        return buildToken(extraClaims, user, jwtRefreshExpiration);
     }
 
     public long getExpirationTime() {
