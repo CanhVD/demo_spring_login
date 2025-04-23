@@ -1,16 +1,14 @@
 package com.example.demo1.service.user;
 
-import com.example.demo1.criteria.SearchCriteria;
-import com.example.demo1.criteria.SearchQueryCriteriaConsumer;
 import com.example.demo1.model.User;
 import com.example.demo1.repository.UserRepository;
 import com.example.demo1.request.UserRequest;
 import com.example.demo1.response.PageResponse;
+import com.example.demo1.util.DataUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -128,7 +125,7 @@ public class UserService implements IUserService {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
         Root<User> userRoot = query.from(User.class);
-        query.where(predicateByUser(criteriaBuilder, userRoot, search));
+        query.where(DataUtil.predicateBySearch(criteriaBuilder, userRoot, search));
 
         Pattern pattern = Pattern.compile("(\\w+?)(:)(asc|desc)");
         if (StringUtils.hasLength(sortBy)) {
@@ -157,28 +154,8 @@ public class UserService implements IUserService {
         CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
         Root<User> root = query.from(User.class);
         query.select(criteriaBuilder.count(root));
-        query.where(predicateByUser(criteriaBuilder, root, search));
+        query.where(DataUtil.predicateBySearch(criteriaBuilder, root, search));
 
         return entityManager.createQuery(query).getSingleResult();
-    }
-
-    // List ĐK search để query bất kỳ một entity nào
-    private <T> Predicate predicateByUser(CriteriaBuilder criteriaBuilder, Root<T> root, String... search) {
-        List<SearchCriteria> criteriaList = new ArrayList<>();
-
-        if (search.length > 0) {
-            Pattern pattern = Pattern.compile("(\\w+?)(:|>|<)(.*)");
-            for (String s : search) {
-                Matcher matcher = pattern.matcher(s);
-                if (matcher.find()) {
-                    criteriaList.add(new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3)));
-                }
-            }
-        }
-
-        Predicate userPredicate = criteriaBuilder.conjunction();
-        SearchQueryCriteriaConsumer searchQueryCriteriaConsumer = new SearchQueryCriteriaConsumer(userPredicate, criteriaBuilder, root);
-        criteriaList.forEach(searchQueryCriteriaConsumer);
-        return searchQueryCriteriaConsumer.getPredicate();
     }
 }
