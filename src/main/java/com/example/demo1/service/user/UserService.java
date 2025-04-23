@@ -55,7 +55,7 @@ public class UserService implements IUserService {
                 .build();
     }
 
-    public PageResponse<?> searchWithCriteria(int offset, int pageSize, String sortBy, String address, String... search) {
+    public PageResponse<?> searchWithCriteria(int offset, int pageSize, String sortBy, String... search) {
         logger.info("Search user with search={} and sortBy={}", search, sortBy);
 
         List<SearchCriteria> criteriaList = new ArrayList<>();

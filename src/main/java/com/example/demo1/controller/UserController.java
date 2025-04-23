@@ -36,13 +36,14 @@ public class UserController extends BaseRestController {
     }
 
     @GetMapping("/search-with-criteria")
-    public ResponseEntity<?> advanceSearchWithCriteria(@RequestParam(defaultValue = "0", required = false) int pageNo,
-                                                     @RequestParam(defaultValue = "20", required = false) int pageSize,
-                                                     @RequestParam(required = false) String sortBy,
-                                                     @RequestParam(required = false) String address,
-                                                     @RequestParam(defaultValue = "") String... search) {
+    public ResponseEntity<?> advanceSearchWithCriteria(
+            @RequestParam(defaultValue = "0", required = false) int pageNo,
+            @RequestParam(defaultValue = "20", required = false) int pageSize,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(defaultValue = "") String... search
+    ) {
         logger.info("Request advance search query by criteria");
-        return execute(() -> userService.searchWithCriteria(pageNo, pageSize, sortBy, address, search));
+        return execute(() -> userService.searchWithCriteria(pageNo, pageSize, sortBy, search));
     }
 
     @GetMapping("{id}")
