@@ -57,38 +57,16 @@ public class UserService implements IUserService {
 
     public PageResponse<?> searchWithCriteria(int offset, int pageSize, String sortBy, String... search) {
         logger.info("Search user with search={} and sortBy={}", search, sortBy);
-
-        List<SearchCriteria> criteriaList = new ArrayList<>();
-
-        if (search.length > 0) {
-            Pattern pattern = Pattern.compile("(\\w+?)(:|>|<)(.*)");
-            for (String s : search) {
-                Matcher matcher = pattern.matcher(s);
-                if (matcher.find()) {
-                    criteriaList.add(new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3)));
-                }
-            }
-        }
-
-        if (StringUtils.hasLength(sortBy)) {
-            Pattern pattern = Pattern.compile("(\\w+?)(:)(asc|desc)");
-            for (String s : search) {
-                Matcher matcher = pattern.matcher(s);
-                if (matcher.find()) {
-                    criteriaList.add(new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3)));
-                }
-            }
-        }
-
-        List<User> users = getUsers(offset, pageSize, criteriaList, sortBy);
-
-        Long totalElements = getTotalElements(criteriaList);
+        // Get list user by criteria
+        List<User> users = getListUsers(offset, pageSize, sortBy, search);
+        // Get total record
+        Long totalElements = getTotalElements(search);
 
         Page<User> page = new PageImpl<>(users, PageRequest.of(offset, pageSize), totalElements);
 
         return PageResponse.<List<User>>builder()
-                .result(page.getContent())
                 .total(totalElements)
+                .result(page.getContent())
                 .build();
     }
 
@@ -144,18 +122,13 @@ public class UserService implements IUserService {
         userRepository.deleteById(id);
     }
 
-    private List<User> getUsers(int offset, int pageSize, List<SearchCriteria> criteriaList, String sortBy) {
+    private List<User> getListUsers(int offset, int pageSize, String sortBy, String... search) {
         logger.info("-------------- getUsers --------------");
 
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
         Root<User> userRoot = query.from(User.class);
-
-        Predicate userPredicate = criteriaBuilder.conjunction();
-        SearchQueryCriteriaConsumer searchConsumer = new SearchQueryCriteriaConsumer(userPredicate, criteriaBuilder, userRoot);
-        criteriaList.forEach(searchConsumer);
-        userPredicate = searchConsumer.getPredicate();
-        query.where(userPredicate);
+        query.where(predicateByUser(criteriaBuilder, userRoot, search));
 
         Pattern pattern = Pattern.compile("(\\w+?)(:)(asc|desc)");
         if (StringUtils.hasLength(sortBy)) {
@@ -177,20 +150,35 @@ public class UserService implements IUserService {
                 .getResultList();
     }
 
-    private Long getTotalElements(List<SearchCriteria> params) {
+    private Long getTotalElements(String... search) {
         logger.info("-------------- getTotalElements --------------");
 
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
         Root<User> root = query.from(User.class);
-
-        Predicate predicate = criteriaBuilder.conjunction();
-        SearchQueryCriteriaConsumer searchConsumer = new SearchQueryCriteriaConsumer(predicate, criteriaBuilder, root);
-        params.forEach(searchConsumer);
-        predicate = searchConsumer.getPredicate();
         query.select(criteriaBuilder.count(root));
-        query.where(predicate);
+        query.where(predicateByUser(criteriaBuilder, root, search));
 
         return entityManager.createQuery(query).getSingleResult();
+    }
+
+    // List ĐK search để query bất kỳ một entity nào
+    private <T> Predicate predicateByUser(CriteriaBuilder criteriaBuilder, Root<T> root, String... search) {
+        List<SearchCriteria> criteriaList = new ArrayList<>();
+
+        if (search.length > 0) {
+            Pattern pattern = Pattern.compile("(\\w+?)(:|>|<)(.*)");
+            for (String s : search) {
+                Matcher matcher = pattern.matcher(s);
+                if (matcher.find()) {
+                    criteriaList.add(new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3)));
+                }
+            }
+        }
+
+        Predicate userPredicate = criteriaBuilder.conjunction();
+        SearchQueryCriteriaConsumer searchQueryCriteriaConsumer = new SearchQueryCriteriaConsumer(userPredicate, criteriaBuilder, root);
+        criteriaList.forEach(searchQueryCriteriaConsumer);
+        return searchQueryCriteriaConsumer.getPredicate();
     }
 }

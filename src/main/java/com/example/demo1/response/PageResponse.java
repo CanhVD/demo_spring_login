@@ -6,8 +6,6 @@ import lombok.Data;
 @Data
 @Builder
 public class PageResponse<T> {
-
-    private T result;
-
     private long total;
+    private T result;
 }
