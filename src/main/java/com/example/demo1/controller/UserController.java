@@ -6,6 +6,8 @@ import com.example.demo1.response.BaseResponse;
 import com.example.demo1.response.PageResponse;
 import com.example.demo1.service.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,8 @@ public class UserController extends BaseRestController {
 
     private final UserService userService;
 
+    private static final Logger logger = LogManager.getLogger(UserController.class);
+
     @GetMapping()
     public ResponseEntity<BaseResponse<List<User>>> getAllUsers() {
         return execute(userService::getAllUser);
@@ -29,6 +33,16 @@ public class UserController extends BaseRestController {
             @RequestParam(defaultValue = "10") Integer size
     ) {
         return execute(() -> userService.getUserBySearch(page, size));
+    }
+
+    @GetMapping("/search-with-criteria")
+    public ResponseEntity<?> advanceSearchWithCriteria(@RequestParam(defaultValue = "0", required = false) int pageNo,
+                                                     @RequestParam(defaultValue = "20", required = false) int pageSize,
+                                                     @RequestParam(required = false) String sortBy,
+                                                     @RequestParam(required = false) String address,
+                                                     @RequestParam(defaultValue = "") String... search) {
+        logger.info("Request advance search query by criteria");
+        return execute(() -> userService.searchWithCriteria(pageNo, pageSize, sortBy, address, search));
     }
 
     @GetMapping("{id}")
