@@ -1,14 +1,17 @@
 package com.example.demo1.controller;
 
+import com.example.demo1.exception.BindingResultException;
 import com.example.demo1.model.User;
 import com.example.demo1.request.UserRequest;
 import com.example.demo1.response.BaseResponse;
 import com.example.demo1.response.PageResponse;
 import com.example.demo1.service.user.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -58,13 +61,12 @@ public class UserController extends BaseRestController {
     }
 
     @PostMapping()
-    public ResponseEntity<BaseResponse<User>> addUser(@RequestBody UserRequest request) {
+    public ResponseEntity<BaseResponse<User>> addUser(@Valid @RequestBody UserRequest request, BindingResult bindingResult) {
         return execute(() -> {
-            try {
-                return userService.addUser(request);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            if (bindingResult.hasErrors()) {
+                throw new BindingResultException(bindingResult);
             }
+            return userService.addUser(request);
         });
     }
 
