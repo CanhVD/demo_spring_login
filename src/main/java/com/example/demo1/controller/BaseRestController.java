@@ -1,5 +1,6 @@
 package com.example.demo1.controller;
 
+import com.example.demo1.exception.BindingResultException;
 import com.example.demo1.response.BaseResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,15 @@ public class BaseRestController {
 
     protected <T> ResponseEntity<BaseResponse<T>> errorResponse(Exception exception) {
         BaseResponse<T> response = BaseResponse.<T>builder().code(1).msg(exception.getMessage()).build();
+
+        if (exception instanceof RuntimeException) {
+            response = BaseResponse.<T>builder().code(1).msg("Error Runtime: " + exception.getMessage()).build();
+        }
+
+        if (exception instanceof BindingResultException) {
+            response = BaseResponse.<T>builder().code(1).msg(exception.getMessage()).build();
+        }
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
