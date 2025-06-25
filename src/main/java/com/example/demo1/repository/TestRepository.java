@@ -4,6 +4,7 @@ import com.example.demo1.model.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,5 +22,10 @@ public class TestRepository {
     public List<User> getAllUser() {
         TypedQuery<User> query = entityManager.createQuery("select u from User u where username like '%ca%'", User.class);
         return query.getResultList();
+    }
+
+    public List<User> limitUser(int limit) {
+        return entityManager.createQuery("SELECT u FROM User u ORDER BY u.id DESC ",
+                User.class).setMaxResults(limit).getResultList();
     }
 }
