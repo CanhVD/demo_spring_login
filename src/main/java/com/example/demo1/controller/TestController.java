@@ -128,7 +128,6 @@ public class TestController extends BaseRestController {
         User user2 = userRepository.findByUsername("George Kelly").orElse(new User());
         User user3 = userRepository.findById(1234).orElse(new User());
         BeanUtils.copyProperties(user2, user5);
-        System.out.println("Hello world");
     }
 }
 
