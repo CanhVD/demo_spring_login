@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class User {
 
     // Da cau hinh chung trong config jackson
     //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd", timezone = "Asia/Ho_Chi_Minh")
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 
     private String createBy;
 

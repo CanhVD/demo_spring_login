@@ -77,9 +77,9 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User addUser(UserRequest request) throws Exception {
+    public User addUser(UserRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new Exception("User is exists");
+            throw new RuntimeException("User is exists");
         }
         User newUser = User.builder()
                 .username(request.getUsername())
