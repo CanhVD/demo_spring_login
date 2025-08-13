@@ -80,4 +80,44 @@ public class FileUtils {
         }
         return lines;
     }
+
+    // =========================
+    // 11. File <-> byte[]
+    // =========================
+
+    // Đọc file thành byte[]
+    public static byte[] fileToBytes(String filePath) throws IOException {
+        return Files.readAllBytes(Paths.get(filePath));
+    }
+
+    // Ghi byte[] ra file
+    public static void bytesToFile(byte[] data, String filePath) throws IOException {
+        Files.write(Paths.get(filePath), data);
+    }
+
+    // =========================
+    // 12. Object <-> byte[]
+    // =========================
+
+    // Serialize object thành byte[]
+    public static byte[] objectToBytes(Object obj) throws IOException {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+             ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+
+            oos.writeObject(obj);
+            oos.flush();
+            return bos.toByteArray();
+        }
+    }
+
+    // Deserialize byte[] thành Object
+    public static <T> T bytesToObject(byte[] data, Class<T> clazz)
+            throws IOException, ClassNotFoundException {
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(data);
+             ObjectInputStream ois = new ObjectInputStream(bis)) {
+
+            Object obj = ois.readObject();
+            return clazz.cast(obj);
+        }
+    }
 }
