@@ -6,7 +6,7 @@ import com.example.demo1.response.AuthResponse;
 
 public interface IAuthService {
 
-    AuthResponse login(LoginResquest resquest) throws Exception;
+    AuthResponse login(LoginResquest resquest);
 
-    AuthResponse refreshToken(RefreshTokenResquest resquest) throws Exception;
+    AuthResponse refreshToken(RefreshTokenResquest resquest);
 }
