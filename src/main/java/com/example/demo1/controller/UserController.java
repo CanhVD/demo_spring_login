@@ -54,14 +54,14 @@ public class UserController extends BaseRestController {
         return execute(() -> userService.getUserById(id));
     }
 
+    // Example validate request body
     @PostMapping()
     public ResponseEntity<BaseResponse<User>> addUser(@Valid @RequestBody UserRequest request, BindingResult bindingResult) {
-        return execute(() -> {
-            if (bindingResult.hasErrors()) {
-                throw new BindingResultException(bindingResult);
-            }
-            return userService.addUser(request);
-        });
+        if (bindingResult.hasErrors()) {
+            throw new BindingResultException(bindingResult);
+        }
+
+        return execute(() -> userService.addUser(request));
     }
 
     @PutMapping({"{id}"})
