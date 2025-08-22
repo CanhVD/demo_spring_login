@@ -68,10 +68,10 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User getUserById(int id) throws Exception {
+    public User getUserById(int id) {
         User user = userRepository.findById(id).orElse(null);
         if (user == null) {
-            throw new Exception("User not found");
+            throw new RuntimeException("User not found");
         }
         return user;
     }
@@ -92,14 +92,14 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User updateUser(UserRequest request, Integer id) throws Exception {
+    public User updateUser(UserRequest request, Integer id) {
         User user = userRepository.findById(id).orElse(null);
         if (user == null) {
-            throw new Exception("User not found");
+            throw new RuntimeException("User not found");
         }
         Boolean checkUserName = userRepository.existsByUsername(request.getUsername());
         if (checkUserName && !request.getUsername().equalsIgnoreCase(user.getUsername())) {
-            throw new Exception("User is exits");
+            throw new RuntimeException("User is exits");
         }
         User updateUser = User.builder()
                 .id(user.getId())

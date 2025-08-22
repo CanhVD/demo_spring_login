@@ -20,10 +20,10 @@ public class AuthService implements IAuthService {
         this.jwtService = jwtService;
     }
 
-    public AuthResponse login(LoginResquest resquest) throws Exception {
-        User user = userRepository.findByUsername(resquest.getUsername());
+    public AuthResponse login(LoginResquest resquest) {
+        User user = userRepository.findByUsername(resquest.getUsername()).orElse(null);
         if (user == null) {
-            throw new Exception("User not found");
+            throw new RuntimeException("User not found");
         }
         return AuthResponse.builder()
                 .username(resquest.getUsername())
@@ -32,11 +32,11 @@ public class AuthService implements IAuthService {
                 .build();
     }
 
-    public AuthResponse refreshToken(RefreshTokenResquest resquest) throws Exception {
+    public AuthResponse refreshToken(RefreshTokenResquest resquest) {
         String userName = jwtService.extractUsername(resquest.getRefreshToken());
-        User user = userRepository.findByUsername(userName);
+        User user = userRepository.findByUsername(userName).orElse(null);
         if (user == null) {
-            throw new Exception("User not found");
+            throw new RuntimeException("User not found");
         }
         return AuthResponse.builder()
                 .username(userName)

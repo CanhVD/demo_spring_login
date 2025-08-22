@@ -20,23 +20,11 @@ public class AuthController extends BaseRestController{
 
     @PostMapping("login")
     public ResponseEntity<BaseResponse<AuthResponse>> login(@RequestBody LoginResquest request) {
-        return execute(() -> {
-            try {
-                return authService.login(request);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        return execute(() ->authService.login(request));
     }
 
     @PostMapping("refresh-token")
     public ResponseEntity<BaseResponse<AuthResponse>> refreshToken(@RequestBody RefreshTokenResquest request) {
-        return execute(() -> {
-            try {
-                return authService.refreshToken(request);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        return execute(() -> authService.refreshToken(request));
     }
 }

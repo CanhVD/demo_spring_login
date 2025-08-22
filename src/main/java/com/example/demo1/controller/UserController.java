@@ -51,13 +51,7 @@ public class UserController extends BaseRestController {
 
     @GetMapping("{id}")
     public ResponseEntity<BaseResponse<User>> getUserById(@PathVariable(value = "id") Integer id) {
-        return execute(() -> {
-            try {
-                return userService.getUserById(id);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        return execute(() -> userService.getUserById(id));
     }
 
     @PostMapping()
@@ -75,13 +69,7 @@ public class UserController extends BaseRestController {
             @RequestBody UserRequest request,
             @PathVariable(value = "id") Integer id
     ) {
-        return execute(() -> {
-            try {
-                return userService.updateUser(request, id);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        return execute(() -> userService.updateUser(request, id));
     }
 
     @DeleteMapping({"{id}"})
