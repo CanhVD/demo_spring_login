@@ -29,11 +29,11 @@ public class BaseRestController {
         BaseResponse<T> response = BaseResponse.<T>builder().code(1).msg(exception.getMessage()).build();
 
         if (exception instanceof RuntimeException) {
-            response = BaseResponse.<T>builder().code(1).msg("Error Runtime: " + exception.getMessage()).build();
+            response = BaseResponse.<T>builder().code(1).msg(exception.getMessage()).build();
         }
 
         if (exception instanceof BindingResultException) {
-            response = BaseResponse.<T>builder().code(1).msg(exception.getMessage()).build();
+            response = BaseResponse.<T>builder().code(2).msg(exception.getMessage()).build();
         }
 
         return new ResponseEntity<>(response, HttpStatus.OK);
