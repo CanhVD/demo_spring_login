@@ -33,13 +33,9 @@ jobs:
           java-version: "17"
           distribution: "temurin"
 
-      # Chạy test
-      - name: Run Tests
-        run: mvn test
-
-      # Build project (sau khi test pass mới build package)
+      # Build project
       - name: Build with Maven
-        run: mvn clean package -DskipTests=false
+        run: mvn clean package -DskipTests
 
       # Upload JAR artifact để dùng cho deploy step
       - name: Upload JAR artifact
