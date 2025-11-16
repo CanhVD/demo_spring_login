@@ -1,10 +1,11 @@
-package com.example.demo1.service.auth;
+package com.example.demo1.service.impl;
 
 import com.example.demo1.model.User;
 import com.example.demo1.repository.UserRepository;
 import com.example.demo1.request.LoginResquest;
 import com.example.demo1.request.RefreshTokenResquest;
 import com.example.demo1.response.AuthResponse;
+import com.example.demo1.service.IAuthService;
 import com.example.demo1.service.jwt.JwtService;
 import org.springframework.stereotype.Service;
 

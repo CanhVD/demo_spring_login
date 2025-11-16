@@ -4,7 +4,7 @@ import com.example.demo1.request.LoginResquest;
 import com.example.demo1.request.RefreshTokenResquest;
 import com.example.demo1.response.BaseResponse;
 import com.example.demo1.response.AuthResponse;
-import com.example.demo1.service.auth.IAuthService;
+import com.example.demo1.service.IAuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

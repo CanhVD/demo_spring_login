@@ -5,7 +5,7 @@ import com.example.demo1.model.User;
 import com.example.demo1.request.UserRequest;
 import com.example.demo1.response.BaseResponse;
 import com.example.demo1.response.PageResponse;
-import com.example.demo1.service.user.UserService;
+import com.example.demo1.service.impl.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;

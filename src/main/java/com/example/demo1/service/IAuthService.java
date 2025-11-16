@@ -1,4 +1,4 @@
-package com.example.demo1.service.auth;
+package com.example.demo1.service;
 
 import com.example.demo1.request.LoginResquest;
 import com.example.demo1.request.RefreshTokenResquest;

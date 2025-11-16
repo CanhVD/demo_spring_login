@@ -42,22 +42,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_OK);
             return;
         }
-        if (isBypassToken(request)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        try {
-            String authHeader = request.getHeader("Authorization");
-            String jwt = authHeader.substring(7);
-            if (jwtService.isTokenValid(jwt)) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-            throw new Exception("Token invalid");
-        } catch (Exception exception) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write(exception.getMessage());
-        }
+//        if (isBypassToken(request)) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+//        try {
+//            String authHeader = request.getHeader("Authorization");
+//            String jwt = authHeader.substring(7);
+//            if (jwtService.isTokenValid(jwt)) {
+//                filterChain.doFilter(request, response);
+//                return;
+//            }
+//            throw new Exception("Token invalid");
+//        } catch (Exception exception) {
+//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//            response.getWriter().write(exception.getMessage());
+//        }
+        filterChain.doFilter(request, response);
     }
 
     private boolean isBypassToken(@NonNull HttpServletRequest request) {

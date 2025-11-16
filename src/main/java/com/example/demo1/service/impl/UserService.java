@@ -1,15 +1,10 @@
-package com.example.demo1.service.user;
+package com.example.demo1.service.impl;
 
 import com.example.demo1.model.User;
 import com.example.demo1.repository.UserRepository;
 import com.example.demo1.request.UserRequest;
 import com.example.demo1.response.PageResponse;
-import com.example.demo1.util.DataUtil;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
+import com.example.demo1.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,19 +12,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements IUserService {
-
-    @PersistenceContext
-    private EntityManager entityManager;
+public class UserService extends BaseService implements IUserService {
 
     private final UserRepository userRepository;
 
@@ -55,7 +44,7 @@ public class UserService implements IUserService {
     public PageResponse<?> searchWithCriteria(int offset, int pageSize, String sortBy, String... search) {
         logger.info("Search user with search={} and sortBy={}", search, sortBy);
         // Get list user by criteria
-        List<User> users = getListUsers(offset, pageSize, sortBy, search);
+        List<User> users = getListBySearch(offset, pageSize, sortBy, User.class, search);
         // Get total record
         Long totalElements = getTotalElements(search);
 
@@ -117,45 +106,5 @@ public class UserService implements IUserService {
     @Override
     public void deleteUser(int id) {
         userRepository.deleteById(id);
-    }
-
-    private List<User> getListUsers(int offset, int pageSize, String sortBy, String... search) {
-        logger.info("-------------- getUsers --------------");
-
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
-        Root<User> userRoot = query.from(User.class);
-        query.where(DataUtil.predicateBySearch(criteriaBuilder, userRoot, search));
-
-        Pattern pattern = Pattern.compile("(\\w+?)(:)(asc|desc)");
-        if (StringUtils.hasLength(sortBy)) {
-            Matcher matcher = pattern.matcher(sortBy);
-            if (matcher.find()) {
-                String fieldName = matcher.group(1);
-                String direction = matcher.group(3);
-                if (direction.equalsIgnoreCase("asc")) {
-                    query.orderBy(criteriaBuilder.asc(userRoot.get(fieldName)));
-                } else {
-                    query.orderBy(criteriaBuilder.desc(userRoot.get(fieldName)));
-                }
-            }
-        }
-
-        return entityManager.createQuery(query)
-                .setFirstResult(offset)
-                .setMaxResults(pageSize)
-                .getResultList();
-    }
-
-    private Long getTotalElements(String... search) {
-        logger.info("-------------- getTotalElements --------------");
-
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
-        Root<User> root = query.from(User.class);
-        query.select(criteriaBuilder.count(root));
-        query.where(DataUtil.predicateBySearch(criteriaBuilder, root, search));
-
-        return entityManager.createQuery(query).getSingleResult();
     }
 }
