@@ -14,8 +14,7 @@ public class GlobalExceptionHandler<T> {
     @ExceptionHandler(BindingResultException.class)
     public BaseResponse<T> handleResourceNotFoundException(BindingResultException exception) {
         log.error("Exception cause = {}", exception.getMessage());
-        BaseResponse<T>  response = BaseResponse.<T>builder().code(2).msg(exception.getMessage()).build();
-        return response;
+        return BaseResponse.<T>builder().code(2).msg(exception.getMessage()).build();
     }
 
     @ResponseBody
