@@ -75,7 +75,7 @@ public class UserService extends BaseService implements IUserService {
                 .password(request.getPassword())
                 .email(request.getEmail())
                 .createdAt(LocalDateTime.now())
-                .createdBy(request.getCreatedBy())
+                .createdBy(request.getCreateBy())
                 .build();
         return userRepository.save(newUser);
     }
@@ -96,7 +96,7 @@ public class UserService extends BaseService implements IUserService {
                 .password(request.getPassword())
                 .email(request.getEmail())
                 .updatedAt(LocalDateTime.now())
-                .updateBy(request.getCreatedBy())
+                .updateBy(request.getCreateBy())
                 .createdBy(user.getCreatedBy())
                 .createdAt(user.getCreatedAt())
                 .build();
